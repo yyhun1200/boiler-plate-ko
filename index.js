@@ -25,7 +25,7 @@ mongoose
 
 app.get("/", (reg, res) => res.send("Hello World!"));
 
-app.post("api/users/register", (req, res) => {
+app.post("/api/users/register", (req, res) => {
   // 회원 가입 할때 필요한 정보들을 clinet에서 가져오면
   // 그것들을 데이터베이스에 넣어준다
   const user = new User(req.body);
@@ -37,7 +37,7 @@ app.post("api/users/register", (req, res) => {
   });
 });
 
-app.post("api/users/login", (req, res) => {
+app.post("/api/users/login", (req, res) => {
   // 요청된 이메일을 데이터베이스에서 있는지 찾는다.
   User.findOne({ email: req.body.email }, (err, user) => {
     if (!user) {
@@ -66,7 +66,7 @@ app.post("api/users/login", (req, res) => {
   });
 });
 
-app.get("api/users/auth", auth, (req, res) => {
+app.get("/api/users/auth", auth, (req, res) => {
   // 여기까지 미들웨어를 통과해 왔다는 이야기는 Authentication 이 True라는 말.
   res.status(200).json({
     _id: req.user._id,
@@ -78,6 +78,21 @@ app.get("api/users/auth", auth, (req, res) => {
     role: req.user.role,
     image: req.user.image,
   });
+});
+
+app.get("/api/users/logout", auth, (req, res) => {
+  User.findOneAndUpdate(
+    {
+      _id: req.user._id,
+    },
+    { token: "" },
+    (err, user) => {
+      if (err) return res.json({ success: false, err });
+      return res
+        .status(200) //
+        .send({ success: true });
+    }
+  );
 });
 
 app.listen(port, () => {
