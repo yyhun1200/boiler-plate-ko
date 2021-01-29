@@ -25,6 +25,8 @@ mongoose
 
 app.get("/", (reg, res) => res.send("Hello World!"));
 
+app.get("/api/hello", (reg, res) => res.send("Hello 안녕하세요"));
+
 app.post("/api/users/register", (req, res) => {
   // 회원 가입 할때 필요한 정보들을 clinet에서 가져오면
   // 그것들을 데이터베이스에 넣어준다
